@@ -1,0 +1,30 @@
+# Dependency directory
+node_modules/
+
+# Env files
+.env
+.env.development
+.env.production
+.env.local
+.env.*.local
+
+
+# Build outputs
+dist/
+build/
+out/
+.vite/
+
+# Logs
+*.log
+
+# IDE/editor junk
+.vscode/
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.env*
