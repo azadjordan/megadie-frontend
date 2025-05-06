@@ -10,8 +10,6 @@ node_modules/
 
 
 # Build outputs
-dist/
-build/
 out/
 .vite/
 
