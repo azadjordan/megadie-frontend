@@ -35,11 +35,16 @@ const ProductCard = ({ product }) => {
 
       {/* ✅ Product Image */}
       <Link to={`/product/${product._id}`}>
-        <img
-          src={image}
-          alt={product.name}
-          className="h-48 w-full object-cover"
-        />
+<img
+  src={image}
+  alt={product.name}
+  className="h-48 w-full object-cover"
+  onError={(e) => {
+    e.currentTarget.onerror = null; // Prevent looping
+    e.currentTarget.src = "/placeholder.jpg";
+  }}
+/>
+
       </Link>
 
       {/* ✅ Details Section */}
