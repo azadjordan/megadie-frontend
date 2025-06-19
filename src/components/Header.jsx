@@ -4,6 +4,7 @@ import { FaShoppingCart, FaUser, FaBars, FaTimes, FaSignOutAlt, FaStore } from "
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../slices/authSlice";
 import { clearCart } from "../slices/cartSlice";
+import { USERS_URL } from "../constants.js";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -22,16 +23,16 @@ const Header = () => {
   }, [totalQuantity]);
 
   // Logout handler
-  const logoutHandler = () => {
-    fetch(import.meta.env.VITE_API_BASE_URL + "/api/users/logout", {
-      method: "POST",
-      credentials: "include",
-    }).then(() => {
-      dispatch(logout());
-      dispatch(clearCart());
-      navigate("/");
-    });
-  };
+const logoutHandler = () => {
+  fetch(`${USERS_URL}/logout`, {
+    method: "POST",
+    credentials: "include",
+  }).then(() => {
+    dispatch(logout());
+    dispatch(clearCart());
+    navigate("/");
+  });
+};
 
   return (
     <>
