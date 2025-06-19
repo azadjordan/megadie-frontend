@@ -20,7 +20,6 @@ const Register = () => {
   const { userInfo } = useSelector((state) => state.auth);
   const [register, { isLoading }] = useRegisterMutation();
 
-  // Optional: handle redirect if needed
   const redirect = new URLSearchParams(location.search).get("redirect") || "/";
 
   useEffect(() => {
@@ -72,7 +71,7 @@ const Register = () => {
         </h2>
 
         {errors.apiError && (
-          <p className="text-red-600 text-sm text-center bg-red-50 border border-red-200 p-2 rounded mb-4">
+          <p className="text-red-600 text-base text-center bg-red-50 border border-red-200 p-2 rounded mb-4">
             {errors.apiError}
           </p>
         )}
@@ -80,7 +79,6 @@ const Register = () => {
         <form onSubmit={submitHandler} className="space-y-5">
           {["name", "phoneNumber", "email", "password", "confirmPassword"].map(
             (field, index) => {
-              // Check matching logic
               const passwordsMatch =
                 formData.password === formData.confirmPassword &&
                 formData.password.length > 0;
@@ -101,7 +99,7 @@ const Register = () => {
 
               return (
                 <div key={index}>
-                  <label className="block text-sm font-medium text-gray-700 capitalize mb-1">
+                  <label className="block text-base font-medium text-gray-700 capitalize mb-1">
                     {field.replace(/([A-Z])/g, " $1")}
                   </label>
                   <input
@@ -118,10 +116,10 @@ const Register = () => {
                       .toLowerCase()}`}
                     value={formData[field]}
                     onChange={handleChange}
-                    className={`w-full p-3 rounded-md text-sm border focus:outline-none transition focus:ring-2 ${borderColorClass}`}
+                    className={`w-full p-3 rounded-md text-base border focus:outline-none transition focus:ring-2 ${borderColorClass}`}
                   />
                   {errors[field] && (
-                    <p className="text-red-500 text-xs mt-1">{errors[field]}</p>
+                    <p className="text-red-500 text-sm mt-1">{errors[field]}</p>
                   )}
                 </div>
               );
@@ -131,7 +129,7 @@ const Register = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className={`w-full py-3 font-semibold text-white rounded-md transition ${
+            className={`w-full py-3 font-semibold text-base text-white rounded-md transition ${
               isLoading
                 ? "bg-purple-300 cursor-not-allowed"
                 : "bg-purple-500 hover:bg-purple-600 cursor-pointer"
@@ -141,7 +139,7 @@ const Register = () => {
           </button>
         </form>
 
-        <p className="text-center text-sm text-gray-600 mt-6">
+        <p className="text-center text-base text-gray-600 mt-6">
           Already have an account?{" "}
           <Link
             to={`/login?redirect=${redirect}`}
