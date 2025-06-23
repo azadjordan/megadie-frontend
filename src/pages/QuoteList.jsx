@@ -40,16 +40,19 @@ const QuoteList = () => {
     }
   };
 
-  const handleShare = (quote, quoteId) => {
-    if (quote.status !== "Quoted" && quote.status !== "Confirmed") {
-      toast.warn("Quote is being reviewed! Cannot share PDF.");
-      return;
-    }
-    const url = `${
-      import.meta.env.VITE_API_URL || "http://localhost:5000"
-    }/api/quotes/${quoteId}/pdf`;
-    window.open(url, "_blank");
-  };
+const handleShare = (quote, quoteId) => {
+  if (quote.status !== "Quoted" && quote.status !== "Confirmed") {
+    toast.warn("Quote is being reviewed! Cannot share PDF.");
+    return;
+  }
+
+  const url = `${
+    import.meta.env.VITE_API_URL || "http://localhost:5000"
+  }/api/quotes/${quoteId}/pdf`;
+
+  window.open(url, "_blank");
+};
+
 
   const handleCreateOrder = async (quote) => {
     if (quote.status !== "Confirmed") {
@@ -174,7 +177,7 @@ const QuoteList = () => {
                       </button>
                       <button
                         title="Open Quote PDF"
-                        onClick={() => handleShare(quote._id)}
+                        onClick={() => handleShare(quote, quote._id)}
                         className="p-2 text-purple-600 hover:text-purple-800 hover:bg-purple-100 cursor-pointer"
                       >
                         <FaShareAlt />
