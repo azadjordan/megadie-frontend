@@ -4,7 +4,7 @@ import {
   useGetQuoteByIdQuery,
   useUpdateQuoteMutation,
 } from "../slices/quotesApiSlice";
-import { useGetUsersQuery } from "../slices/usersApiSlice"; // ✅ Import users query
+import { useGetUsersQuery } from "../slices/usersApiSlice";
 import Message from "../components/Message";
 import { toast } from "react-toastify";
 
@@ -12,7 +12,7 @@ const QuoteUpdate = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { data: quote, isLoading, error } = useGetQuoteByIdQuery(id);
-  const { data: users = [] } = useGetUsersQuery(); // ✅ Fetch users
+  const { data: users = [] } = useGetUsersQuery();
   const [updateQuote, { isLoading: isUpdating }] = useUpdateQuoteMutation();
 
   const [form, setForm] = useState({
@@ -29,12 +29,12 @@ const QuoteUpdate = () => {
   useEffect(() => {
     if (quote) {
       setForm({
-        user: quote.user?._id || "", // ✅ Set initial user ID
+        user: quote.user?._id || "",
         status: quote.status || "",
         deliveryCharge: quote.deliveryCharge || 0,
         extraFee: quote.extraFee || 0,
         adminToAdminNote: quote.adminToAdminNote || "",
-        AdminToClientNote: quote.AdminToClientNote || "",
+        AdminToClientNote: quote.adminToClientNote || "",
         requestedItems: quote.requestedItems.map((item) => ({
           product: item.product,
           qty: item.qty,
@@ -112,170 +112,180 @@ const QuoteUpdate = () => {
   if (error) return <Message type="error">Failed to load quote.</Message>;
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <h2 className="text-2xl font-semibold text-purple-700 mb-4">
-        Update Quote
-      </h2>
+    <div className="p-6 max-w-5xl mx-auto text-sm text-gray-800">
+      <h2 className="text-xl font-semibold text-gray-800 mb-6">Update Quote</h2>
 
-      {/* 🔹 Select User */}
-      <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700">User</label>
-        <select
-          name="user"
-          value={form.user}
-          onChange={handleChange}
-          className="w-full border rounded px-3 py-2 text-sm"
-        >
-          <option value="">Select user</option>
-          {users.map((u) => (
-            <option key={u._id} value={u._id}>
-              {u.name}
-            </option>
-          ))}
-        </select>
-      </div>
+      <form onSubmit={handleSubmit} className="space-y-6">
 
-      {/* 🔹 Order Created / Order ID */}
-      <div className="mb-6 text-sm text-gray-700 space-y-1">
+        {/* User */}
         <div>
-          <strong>Order Created:</strong>{" "}
-          {quote.isOrderCreated ? (
-            <span className="text-green-600 font-medium">Yes</span>
-          ) : (
-            <span className="text-gray-500">No</span>
-          )}
-        </div>
-        {quote.createdOrderId && (
-          <div>
-            <strong>Order ID:</strong>{" "}
-            <span className="text-blue-600">{quote.createdOrderId}</span>
-          </div>
-        )}
-      </div>
-
-      {/* 🔹 Requested Items Table */}
-      <div className="overflow-x-auto mb-6">
-        <table className="min-w-full text-sm border">
-          <thead className="bg-gray-100 text-gray-700">
-            <tr>
-              <th className="px-4 py-2">Product</th>
-              <th className="px-4 py-2">Code</th>
-              <th className="px-4 py-2">Size</th>
-              <th className="px-4 py-2">Qty</th>
-              <th className="px-4 py-2">Unit Price (AED)</th>
-              <th className="px-4 py-2">Qty Price</th>
-            </tr>
-          </thead>
-          <tbody>
-            {form.requestedItems.map((item, idx) => (
-              <tr key={idx} className="border-t">
-                <td className="px-4 py-2">{item.product?.name}</td>
-                <td className="px-4 py-2">{item.product?.code || "-"}</td>
-                <td className="px-4 py-2">{item.product?.size}</td>
-                <td className="px-4 py-2">
-                  <input
-                    type="number"
-                    min="1"
-                    value={item.qty}
-                    onChange={(e) => handleQtyChange(idx, e.target.value)}
-                    className="w-16 border rounded px-2 py-1 text-sm"
-                  />
-                </td>
-                <td className="px-4 py-2">
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={item.unitPrice}
-                    onChange={(e) => handlePriceChange(idx, e.target.value)}
-                    className="w-24 border rounded px-2 py-1 text-sm"
-                  />
-                </td>
-                <td className="px-4 py-2">{item.qtyPrice.toFixed(2)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* 🔹 Update Form */}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Status</label>
+          <label className="block mb-1 font-medium">User</label>
           <select
-            name="status"
-            value={form.status}
+            name="user"
+            value={form.user}
             onChange={handleChange}
-            className="w-full border rounded px-3 py-2 text-sm"
+            className="w-full border rounded px-3 py-2"
           >
-            {["Requested", "Quoted", "Confirmed", "Rejected"].map((s) => (
-              <option key={s} value={s}>
-                {s}
+            <option value="">Select user</option>
+            {users.map((u) => (
+              <option key={u._id} value={u._id}>
+                {u.name}
               </option>
             ))}
           </select>
         </div>
 
-        {["deliveryCharge", "extraFee"].map((field) => (
-          <div key={field}>
-            <label className="block text-sm font-medium text-gray-700 capitalize">
-              {field.replace(/([A-Z])/g, " $1")}
-            </label>
+        {/* Order Info */}
+        <div className="bg-gray-50 border rounded p-3">
+          <div><strong>Order Created:</strong> {quote.isOrderCreated ? "Yes" : "No"}</div>
+          {quote.createdOrderId && (
+            <div><strong>Order ID:</strong> {quote.createdOrderId}</div>
+          )}
+        </div>
+
+        {/* Requested Items Table */}
+        <div className="overflow-x-auto border rounded">
+          <table className="min-w-full text-left">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="px-3 py-2">Product</th>
+                <th className="px-3 py-2">Code</th>
+                <th className="px-3 py-2">Size</th>
+                <th className="px-3 py-2">Qty</th>
+                <th className="px-3 py-2">Unit Price</th>
+                <th className="px-3 py-2">Qty Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              {form.requestedItems.map((item, idx) => (
+                <tr key={idx} className="border-t">
+                  <td className="px-3 py-1">{item.product?.name}</td>
+                  <td className="px-3 py-1">{item.product?.code || "-"}</td>
+                  <td className="px-3 py-1">{item.product?.size}</td>
+                  <td className="px-3 py-1">
+                    <input
+                      type="number"
+                      min="1"
+                      value={item.qty}
+                      onChange={(e) => handleQtyChange(idx, e.target.value)}
+                      className="w-16 border rounded px-2 py-1"
+                    />
+                  </td>
+                  <td className="px-3 py-1">
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={item.unitPrice}
+                      onChange={(e) => handlePriceChange(idx, e.target.value)}
+                      className="w-24 border rounded px-2 py-1"
+                    />
+                  </td>
+                  <td className="px-3 py-1">{item.qtyPrice.toFixed(2)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+
+        {/* Price Section */}
+        <div className="grid md:grid-cols-3 gap-4">
+          <div>
+            <label className="block mb-1 font-medium">Delivery Charge</label>
             <input
-              name={field}
+              name="deliveryCharge"
               type="number"
               step="0.01"
-              value={form[field]}
+              value={form.deliveryCharge}
               onChange={handleChange}
-              className="w-full border rounded px-3 py-2 text-sm"
+              className="w-full border rounded px-3 py-2"
             />
           </div>
-        ))}
+          <div>
+            <label className="block mb-1 font-medium">Extra Fee</label>
+            <input
+              name="extraFee"
+              type="number"
+              step="0.01"
+              value={form.extraFee}
+              onChange={handleChange}
+              className="w-full border rounded px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-medium">Total Price</label>
+            <input
+              type="number"
+              value={form.totalPrice.toFixed(2)}
+              disabled
+              className="w-full border rounded px-3 py-2 bg-gray-100"
+            />
+          </div>
+        </div>
 
+        {/* Notes */}
+        <div className="grid md:grid-cols-3 gap-4">
+          <div>
+            <label className="block mb-1 font-medium">Admin-to-Admin Note</label>
+            <textarea
+              name="adminToAdminNote"
+              value={form.adminToAdminNote}
+              onChange={handleChange}
+              className="w-full border rounded px-3 py-2"
+              rows={3}
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-medium">Admin-to-Client Note</label>
+            <textarea
+              name="AdminToClientNote"
+              value={form.AdminToClientNote}
+              onChange={handleChange}
+              className="w-full border rounded px-3 py-2"
+              rows={3}
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-medium">Client-to-Admin Note</label>
+            <textarea
+              value={quote.clientToAdminNote || ""}
+              readOnly
+              className="w-full border rounded px-3 py-2 bg-gray-100 text-gray-600"
+              rows={3}
+            />
+          </div>
+        </div>
+
+        {/* Status as buttons */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Total Price (Auto)
-          </label>
-          <input
-            type="number"
-            value={form.totalPrice.toFixed(2)}
-            disabled
-            className="w-full bg-gray-100 border rounded px-3 py-2 text-sm"
-          />
+          <label className="block mb-2 font-medium">Status</label>
+          <div className="flex flex-wrap gap-2">
+            {["Requested", "Quoted", "Confirmed", "Rejected"].map((status) => (
+              <button
+                key={status}
+                type="button"
+                onClick={() => setForm((prev) => ({ ...prev, status }))}
+                className={`px-4 py-2 rounded border transition ${
+                  form.status === status
+                    ? "bg-purple-600 text-white border-purple-600"
+                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                }`}
+              >
+                {status}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Admin-to-Admin Note
-          </label>
-          <textarea
-            name="adminToAdminNote"
-            value={form.adminToAdminNote}
-            onChange={handleChange}
-            className="w-full border rounded px-3 py-2 text-sm"
-            rows={2}
-          />
+          <button
+            type="submit"
+            disabled={isUpdating}
+            className="mt-4 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+          >
+            {isUpdating ? "Updating..." : "Update Quote"}
+          </button>
         </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Admin-to-Client Note
-          </label>
-          <textarea
-            name="AdminToClientNote"
-            value={form.AdminToClientNote}
-            onChange={handleChange}
-            className="w-full border rounded px-3 py-2 text-sm"
-            rows={2}
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={isUpdating}
-          className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 disabled:opacity-50"
-        >
-          {isUpdating ? "Updating..." : "Update Quote"}
-        </button>
       </form>
     </div>
   );

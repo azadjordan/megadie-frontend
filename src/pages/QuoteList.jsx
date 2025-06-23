@@ -40,7 +40,11 @@ const QuoteList = () => {
     }
   };
 
-  const handleShare = (quoteId) => {
+  const handleShare = (quote, quoteId) => {
+    if (quote.status !== "Quoted" && quote.status !== "Confirmed") {
+      toast.warn("Quote is being reviewed! Cannot share PDF.");
+      return;
+    }
     const url = `${
       import.meta.env.VITE_API_URL || "http://localhost:5000"
     }/api/quotes/${quoteId}/pdf`;
