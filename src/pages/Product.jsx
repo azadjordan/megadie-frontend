@@ -100,7 +100,7 @@ const Product = () => {
         </div>
 
         {/* Right: Product Details */}
-        <div className="bg-white shadow-sm rounded-2xl p-6 space-y-6 border border-gray-100">
+        <div className="bg-white shadow-sm rounded-2xl p-4 md:p-6 space-y-6 border border-gray-100">
           <div className="space-y-3">
             <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
             <p className="text-sm text-gray-500">

@@ -11,7 +11,7 @@ const navItems = [
   { label: "Profile", path: "profile", icon: <FaUser /> },
   { label: "Requests", path: "requests", icon: <FaClipboardList /> },
   { label: "Orders", path: "orders", icon: <FaShoppingCart /> },
-  { label: "Invoices & Payments", path: "invoices", icon: <FaFileInvoiceDollar /> },
+  { label: "Invoices", path: "invoices", icon: <FaFileInvoiceDollar /> },
 ];
 
 const AccountDashboard = () => {
@@ -26,7 +26,7 @@ const AccountDashboard = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar */}
+      {/* Sidebar for Desktop */}
       <aside className="w-64 bg-white border-r border-gray-200 shadow-sm hidden md:flex flex-col p-6">
         <h2 className="text-xl font-bold mb-6 text-center text-purple-500 rounded">
           {greeting}
@@ -52,15 +52,28 @@ const AccountDashboard = () => {
         </nav>
       </aside>
 
-      {/* Mobile notice */}
-      <div className="md:hidden w-full text-center p-4 text-sm text-gray-500">
-        📱 Sidebar available on desktop
-      </div>
-
       {/* Main content */}
-      <main className="flex-1 p-6 md:p-10 bg-white rounded-tl-2xl shadow-inner">
+      <main className="flex-1 pb-16 md:pb-0 p-6 md:p-10 bg-white rounded-tl-2xl shadow-inner">
         <Outlet />
       </main>
+
+      {/* Bottom Navigation for Mobile */}
+      <nav className="fixed bottom-0 left-0 right-0 z-10 md:hidden bg-white border-t border-gray-200 shadow-sm flex justify-around py-2">
+        {navItems.map(({ label, path, icon }) => (
+          <NavLink
+            key={path}
+            to={path}
+            className={({ isActive }) =>
+              `flex flex-col items-center text-xs transition ${
+                isActive ? "text-purple-600" : "text-gray-500"
+              }`
+            }
+          >
+            <div className="text-lg">{icon}</div>
+            <span className="text-[11px]">{label}</span>
+          </NavLink>
+        ))}
+      </nav>
     </div>
   );
 };

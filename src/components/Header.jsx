@@ -8,13 +8,13 @@ import { USERS_URL } from "../constants.js";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef();
   const { totalQuantity } = useSelector((state) => state.cart);
   const { userInfo } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [bounce, setBounce] = useState(false); // 🔥 State to track animation trigger
+  const [bounce, setBounce] = useState(false);
 
-  // Detect quantity change and trigger animation
   useEffect(() => {
     if (totalQuantity > 0) {
       setBounce(true);
@@ -22,56 +22,93 @@ const Header = () => {
     }
   }, [totalQuantity]);
 
-  // Logout handler
-const logoutHandler = () => {
-  fetch(`${USERS_URL}/logout`, {
-    method: "POST",
-    credentials: "include",
-  }).then(() => {
-    dispatch(logout());
-    dispatch(clearCart());
-    navigate("/");
-  });
-};
+  // ✅ Close menu on outside click
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (menuOpen && menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, [menuOpen]);
+
+  // ✅ Logout handler
+  const logoutHandler = () => {
+    fetch(`${USERS_URL}/logout`, {
+      method: "POST",
+      credentials: "include",
+    }).then(() => {
+      dispatch(logout());
+      dispatch(clearCart());
+      navigate("/");
+      setMenuOpen(false); // ✅ Close mobile menu after logout
+    });
+  };
 
   return (
-    <>
-      {/* ✅ Fixed Main Header */}
-      <header className="sticky top-0 z-50 bg-white shadow-md">
+    <header className="sticky top-0 z-50 bg-white shadow-md">
       <nav className="container mx-auto flex justify-between items-center py-4 px-6">
-          <Link to="/" className="text-3xl font-extrabold text-purple-500 hover:text-purple-600 transition">
-            Megadie.com
-          </Link>
+        <Link to="/" className="text-3xl font-extrabold text-purple-500 hover:text-purple-600 transition">
+          Megadie.com
+        </Link>
 
-          {/* ✅ Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            <NavLinks userInfo={userInfo} totalQuantity={totalQuantity} bounce={bounce} onLogout={logoutHandler} />
-          </div>
+        {/* ✅ Desktop Navigation */}
+        <div className="hidden md:flex items-center space-x-8">
+          <NavLinks userInfo={userInfo} totalQuantity={totalQuantity} bounce={bounce} onLogout={logoutHandler} />
+        </div>
 
-          {/* ✅ Mobile Menu Button */}
-          <button className="md:hidden text-gray-600 text-3xl" onClick={() => setMenuOpen(!menuOpen)}>
-            {menuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+        {/* ✅ Mobile Menu Button */}
+<div className="md:hidden relative">
+  <button
+    className="text-gray-600 text-3xl"
+    onClick={() => setMenuOpen(!menuOpen)}
+  >
+    {menuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+  </button>
+
+  {totalQuantity > 0 && (
+    <span
+      key={totalQuantity}
+      className={`absolute -top-3 -right-3 bg-purple-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full 
+      transition-transform transform scale-100 ${bounce ? "animate-bounce" : ""}`}
+    >
+      {totalQuantity}
+    </span>
+  )}
+</div>
+
+      </nav>
+
+      {/* ✅ Mobile Sidebar Menu */}
+      {menuOpen && (
+        <div
+          ref={menuRef}
+          className="md:hidden fixed top-0 right-0 w-2/3 h-full bg-white shadow-lg transition-transform duration-300"
+        >
+          <button
+            className="cursor-pointer absolute top-4 right-4 text-gray-600 text-3xl hover:text-red-500"
+            onClick={() => setMenuOpen(false)}
+          >
+            <FaTimes size={28} />
           </button>
-        </nav>
-
-        {/* ✅ Mobile Sidebar Menu */}
-        {menuOpen && (
-          <div className="md:hidden fixed top-0 right-0 w-2/3 h-full bg-white shadow-lg transition-transform duration-300">
-            <button className="cursor-pointer absolute top-4 right-4 text-gray-600 text-3xl hover:text-red-500" onClick={() => setMenuOpen(false)}>
-              <FaTimes size={28} />
-            </button>
-            <div className="p-8 space-y-6">
-              <NavLinks userInfo={userInfo} totalQuantity={totalQuantity} bounce={bounce} onLogout={logoutHandler} mobile onClick={() => setMenuOpen(false)} />
-            </div>
+          <div className="p-8 space-y-6">
+            <NavLinks
+              userInfo={userInfo}
+              totalQuantity={totalQuantity}
+              bounce={bounce}
+              onLogout={logoutHandler}
+              mobile
+              onClick={() => setMenuOpen(false)} // ✅ Close on link click
+            />
           </div>
-        )}
-      </header>
-
-    </>
+        </div>
+      )}
+    </header>
   );
 };
 
-// ✅ Navigation Links Component (With Active Styling)
+// ✅ Navigation Links
 const NavLinks = ({ mobile, onClick, userInfo, totalQuantity, bounce, onLogout }) => {
   const firstName = userInfo?.name?.split(" ")[0] || "Account";
 
@@ -81,13 +118,12 @@ const NavLinks = ({ mobile, onClick, userInfo, totalQuantity, bounce, onLogout }
         <FaStore size={24} /> Shop
       </NavLink>
 
-      {/* ✅ Cart with Badge & Conditional Bounce Animation */}
       <NavLink to="/cart" className={navLinkClass} onClick={onClick} style={{ position: "relative" }}>
         <div className="relative flex items-center">
           <FaShoppingCart size={24} />
           {totalQuantity > 0 && (
             <span
-              key={totalQuantity} // 🔥 Ensures re-render on update
+              key={totalQuantity}
               className={`absolute -top-2.5 -right-2.5 bg-purple-500 text-white text-xs font-bold px-2 py-0.5 rounded-full 
               transition-transform transform scale-100 ${bounce ? "animate-bounce" : ""}`}
             >
@@ -104,7 +140,12 @@ const NavLinks = ({ mobile, onClick, userInfo, totalQuantity, bounce, onLogout }
             <FaUser size={22} /> {firstName}
           </NavLink>
 
-          <button onClick={onLogout} className={`${navLinkBase} text-red-300 hover:text-red-600 transition`}>
+          <button
+            onClick={() => {
+              onLogout(); // ✅ Also closes mobile menu from inside logoutHandler
+            }}
+            className={`${navLinkBase} text-red-300 hover:text-red-600 transition`}
+          >
             <FaSignOutAlt size={22} /> Logout
           </button>
         </>
@@ -117,13 +158,12 @@ const NavLinks = ({ mobile, onClick, userInfo, totalQuantity, bounce, onLogout }
   );
 };
 
-// ✅ Reusable Navigation Link Styling (Handles Active Pages)
+// ✅ Styles
 const navLinkClass = ({ isActive }) =>
   `flex items-center gap-2 font-medium transition relative ${
     isActive ? "text-purple-600 font-semibold" : "text-gray-700 hover:text-purple-500"
   }`;
 
-// ✅ Base class for Logout button (Doesn't need active state)
 const navLinkBase = "flex items-center gap-2 font-medium transition cursor-pointer";
 
 export default Header;

@@ -15,7 +15,7 @@ const ShopFilters = () => {
   const relatedCategories = categories.filter((cat) => cat.productType === selectedProductType);
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-300 text-sm divide-gray-300 divide-y">
+    <div className="bg-white rounded md:rounded-lg shadow-sm border border-gray-300 text-sm divide-gray-300 divide-y">
       {/* 🔹 Product Types */}
       <div className="p-5">
         <h3 className="text-base font-semibold text-purple-600 mb-3 flex items-center gap-2">
@@ -111,7 +111,7 @@ const ShopFilters = () => {
       onClick={() => dispatch(toggleAttribute({ key: filter.key, value: val }))}
       className={`px-3 py-1 rounded-md cursor-pointer text-xs transition ${
         selected
-          ? "bg-purple-300 text-purple-900"
+          ? "bg-purple-200 text-purple-900"
           : "bg-gray-100 hover:bg-purple-100 text-gray-800"
       }`}
     >
@@ -133,7 +133,7 @@ const ShopFilters = () => {
       onClick={() => dispatch(resetFilters())}
       className="text-sm text-red-600 hover:underline font-medium"
     >
-      Clear All Filters
+      Clear Filters
     </button>
   </div>
 )}

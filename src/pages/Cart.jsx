@@ -153,25 +153,27 @@ const Cart = () => {
           </div>
 
           {/* Actions */}
-          <div className="pt-4 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4">
-            <button
-              onClick={() => dispatch(clearCart())}
-              className="cursor-pointer inline-block text-sm font-medium bg-gray-50 border border-gray-300 px-6 py-3 text-gray-500 hover:text-red-500 hover:border-red-300 transition rounded"
-            >
-              Clear Cart
-            </button>
-            <button
-              onClick={handleSubmitQuote}
-              disabled={isLoading || hasInvalidMOQ}
-              className={`cursor-pointer font-semibold px-6 py-3 rounded-md text-md flex items-center justify-center gap-2 transition 
-                ${isLoading || hasInvalidMOQ
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-green-500 hover:bg-green-600 text-white"
-                }`}
-            >
-              {isLoading ? "Submitting..." : "Request Items"}
-            </button>
-          </div>
+          <div className="pt-4 border-t border-gray-200 flex flex-col md:flex-row gap-4">
+  <button
+    onClick={() => dispatch(clearCart())}
+    className="w-full md:w-auto text-sm font-medium bg-gray-50 border border-gray-300 px-6 py-3 text-gray-500 hover:text-red-500 hover:border-red-300 transition rounded"
+  >
+    Clear Cart
+  </button>
+  <button
+    onClick={handleSubmitQuote}
+    disabled={isLoading || hasInvalidMOQ}
+    className={`w-full md:w-auto font-semibold px-6 py-3 rounded-md text-md flex items-center justify-center gap-2 transition 
+      ${
+        isLoading || hasInvalidMOQ
+          ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+          : "bg-green-500 hover:bg-green-600 text-white"
+      }`}
+  >
+    {isLoading ? "Submitting..." : "Request Items"}
+  </button>
+</div>
+
         </div>
       )}
     </div>
