@@ -57,7 +57,14 @@ const ProductList = () => {
       {/* 🔹 Product Table Section */}
       <main className="w-full md:w-3/4">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-semibold text-purple-700">All Products</h2>
+          <h2 className="text-2xl font-semibold text-purple-700">
+            All Products
+            {products.length > 0 && (
+              <span className="text-sm text-gray-500 font-normal ml-2">
+                ({products.length} found)
+              </span>
+            )}
+          </h2>
           <Link
             to="/admin/products/create"
             className="inline-flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition text-sm"
@@ -99,7 +106,9 @@ const ProductList = () => {
                     <td className="px-4 py-3">{prod.code || "-"}</td>
                     <td className="px-4 py-3">{prod.size}</td>
                     <td className="px-4 py-3">{prod.stock}</td>
-                    <td className="px-4 py-3">{prod.price?.toFixed(2)} AED</td>
+                    <td className="px-4 py-3">
+                      {prod.price?.toFixed(2)} AED
+                    </td>
                     <td className="px-4 py-3 text-center">
                       <div className="flex justify-center items-end space-x-1">
                         <Link to={`/admin/products/${prod._id}/edit`}>

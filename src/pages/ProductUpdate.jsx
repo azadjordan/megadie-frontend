@@ -1,13 +1,38 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useGetProductByIdQuery, useUpdateProductMutation } from "../slices/productsApiSlice";
+import {
+  useGetProductByIdQuery,
+  useUpdateProductMutation,
+} from "../slices/productsApiSlice";
 import { useGetCategoriesQuery } from "../slices/categoriesApiSlice";
 import { toast } from "react-toastify";
+
+// === ENUM OPTIONS ===
+const SIZE_OPTIONS = [
+  "1-inch",
+  "1/2-inch",
+  "3/4-inch",
+  "0.4x1.5-mm",
+  "0.5x1.5-mm",
+  "0.5x1.6-mm",
+  "6-mm",
+  "9-mm",
+  "10-mm",
+  "12-mm",
+];
+
+const VARIANT_OPTIONS = ["100-yd", "150-yd", "35-yd"];
+
+const QUALITY_OPTIONS = ["A++", "A", "B"];
 
 const ProductUpdate = () => {
   const { id: productId } = useParams();
   const navigate = useNavigate();
-  const { data: product, isLoading, error } = useGetProductByIdQuery(productId, { refetchOnMountOrArgChange: true });
+  const {
+    data: product,
+    isLoading,
+    error,
+  } = useGetProductByIdQuery(productId, { refetchOnMountOrArgChange: true });
   const { data: categories = [] } = useGetCategoriesQuery();
   const [updateProduct] = useUpdateProductMutation();
 
@@ -15,9 +40,11 @@ const ProductUpdate = () => {
     productType: "",
     category: "",
     size: "",
+    variant: "",
     color: "",
     code: "",
     displaySpecs: "",
+    sort: 0,
     stock: 0,
     moq: 1,
     isAvailable: true,
@@ -37,12 +64,14 @@ const ProductUpdate = () => {
         productType: product.productType || "",
         category: product.category?._id || product.category || "",
         size: product.size || "",
+        variant: product.variant || "",
         color: product.color || "",
         code: product.code || "",
         displaySpecs: product.displaySpecs || "",
+        sort: product.sort || 0,
         stock: product.stock || 0,
         moq: product.moq || 1,
-        isAvailable: product.isAvailable || true,
+        isAvailable: product.isAvailable ?? true,
         origin: product.origin || "",
         storageLocation: product.storageLocation || "",
         price: product.price || 0,
@@ -57,7 +86,7 @@ const ProductUpdate = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
@@ -66,7 +95,7 @@ const ProductUpdate = () => {
   const handleImageChange = (index, value) => {
     const updatedImages = [...formData.images];
     updatedImages[index] = value;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       images: updatedImages,
     }));
@@ -74,14 +103,14 @@ const ProductUpdate = () => {
 
   const handleRemoveImage = (index) => {
     const updatedImages = formData.images.filter((_, i) => i !== index);
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       images: updatedImages,
     }));
   };
 
   const handleAddImage = () => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       images: [...prev.images, ""],
     }));
@@ -117,108 +146,238 @@ const ProductUpdate = () => {
       <form className="grid gap-4 grid-cols-1 md:grid-cols-3">
         <div>
           <label>Product Type</label>
-          <input type="text" value={formData.productType} disabled className="w-full border p-2 rounded bg-gray-100" />
+          <input
+            type="text"
+            value={formData.productType}
+            disabled
+            className="w-full border p-2 rounded bg-gray-100"
+          />
         </div>
 
         <div>
           <label>Product Name</label>
-          <input type="text" value={product?.name || ""} disabled className="w-full border p-2 rounded bg-gray-100" />
+          <input
+            type="text"
+            value={product?.name || ""}
+            disabled
+            className="w-full border p-2 rounded bg-gray-100"
+          />
         </div>
 
         <div>
           <label>SKU</label>
-          <input type="text" value={product?.sku || ""} disabled className="w-full border p-2 rounded bg-gray-100" />
+          <input
+            type="text"
+            value={product?.sku || ""}
+            disabled
+            className="w-full border p-2 rounded bg-gray-100"
+          />
         </div>
 
         <div>
           <label>Category</label>
-          <select name="category" value={formData.category} onChange={handleChange} className="w-full border p-2 rounded">
+          <select
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          >
             <option value="">Select Category</option>
-            {categories.map(cat => (
-              <option key={cat._id} value={cat._id}>{cat.displayName}</option>
+            {categories.map((cat) => (
+              <option key={cat._id} value={cat._id}>
+                {cat.displayName}
+              </option>
             ))}
           </select>
         </div>
 
         <div>
           <label>Size</label>
-          <select name="size" value={formData.size} onChange={handleChange} className="w-full border p-2 rounded">
-            {["1-inch", "0.5-inch", "0.4x1.5", "0.5x1.5", "0.5x1.6", "6mm", "9mm", "10mm", "12mm"].map(size => (
-              <option key={size} value={size}>{size}</option>
+          <select
+            name="size"
+            value={formData.size}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          >
+            {SIZE_OPTIONS.map((size) => (
+              <option key={size} value={size}>
+                {size}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label>Variant</label>
+          <select
+            name="variant"
+            value={formData.variant}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          >
+            <option value="">Select Variant</option>
+            {VARIANT_OPTIONS.map((opt) => (
+              <option key={opt} value={opt}>
+                {opt}
+              </option>
             ))}
           </select>
         </div>
 
         <div>
           <label>Color</label>
-          <input type="text" name="color" value={formData.color} onChange={handleChange} className="w-full border p-2 rounded" />
+          <input
+            type="text"
+            name="color"
+            value={formData.color}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
         </div>
 
         <div>
           <label>Code</label>
-          <input type="text" name="code" value={formData.code} onChange={handleChange} className="w-full border p-2 rounded" />
+          <input
+            type="text"
+            name="code"
+            value={formData.code}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
         </div>
 
-
+        <div>
+          <label>Sort (for ordering)</label>
+          <input
+            type="number"
+            name="sort"
+            value={formData.sort}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+            placeholder="e.g., 117"
+          />
+        </div>
 
         <div>
           <label>Quality</label>
-          <select name="quality" value={formData.quality} onChange={handleChange} className="w-full border p-2 rounded">
+          <select
+            name="quality"
+            value={formData.quality}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          >
             <option value="">Select Quality</option>
-            <option value="A++">A++</option>
-            <option value="A+">A+</option>
-            <option value="B">B</option>
+            {QUALITY_OPTIONS.map((q) => (
+              <option key={q} value={q}>
+                {q}
+              </option>
+            ))}
           </select>
         </div>
 
         <div>
           <label>Display Specs</label>
-          <input type="text" name="displaySpecs" value={formData.displaySpecs} placeholder="Code Quality Length Other ...etc" onChange={handleChange} className="w-full border p-2 rounded" />
+          <input
+            type="text"
+            name="displaySpecs"
+            value={formData.displaySpecs}
+            onChange={handleChange}
+            placeholder="Code Quality Length Other ...etc"
+            className="w-full border p-2 rounded"
+          />
         </div>
 
         <div>
           <label>Stock</label>
-          <input type="number" name="stock" value={formData.stock} onChange={handleChange} className="w-full border p-2 rounded" />
+          <input
+            type="number"
+            name="stock"
+            value={formData.stock}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
         </div>
 
         <div>
           <label>MOQ</label>
-          <input type="number" name="moq" value={formData.moq} onChange={handleChange} className="w-full border p-2 rounded" />
+          <input
+            type="number"
+            name="moq"
+            value={formData.moq}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
         </div>
 
         <div>
           <label>Origin</label>
-          <input type="text" name="origin" value={formData.origin} onChange={handleChange} placeholder='Jessie Weifang' className="w-full border p-2 rounded" />
+          <input
+            type="text"
+            name="origin"
+            value={formData.origin}
+            onChange={handleChange}
+            placeholder="Jessie Weifang"
+            className="w-full border p-2 rounded"
+          />
         </div>
 
         <div>
           <label>Storage Location</label>
-          <input type="text" name="storageLocation" value={formData.storageLocation} onChange={handleChange} placeholder="ctn:A17 or Other" className="w-full border p-2 rounded" />
+          <input
+            type="text"
+            name="storageLocation"
+            value={formData.storageLocation}
+            onChange={handleChange}
+            placeholder="ctn:A17 or Other"
+            className="w-full border p-2 rounded"
+          />
         </div>
 
         <div>
           <label>Price (AED)</label>
-          <input type="number" step="0.01" name="price" value={formData.price} onChange={handleChange} className="w-full border p-2 rounded" />
+          <input
+            type="number"
+            step="0.01"
+            name="price"
+            value={formData.price}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
         </div>
 
         <div>
           <label>Unit</label>
-          <input type="text" name="unit" value={formData.unit} onChange={handleChange} placeholder="Roll, Pack, Piece," className="w-full border p-2 rounded" />
+          <input
+            type="text"
+            name="unit"
+            value={formData.unit}
+            onChange={handleChange}
+            placeholder="Roll, Pack, Piece"
+            className="w-full border p-2 rounded"
+          />
         </div>
 
-        {/* Grouped checkboxes */}
         <div className="flex items-center gap-6">
           <label className="flex items-center gap-2">
-            <input type="checkbox" name="isAvailable" checked={formData.isAvailable} onChange={handleChange} />
+            <input
+              type="checkbox"
+              name="isAvailable"
+              checked={formData.isAvailable}
+              onChange={handleChange}
+            />
             <span>Available</span>
           </label>
           <label className="flex items-center gap-2">
-            <input type="checkbox" name="isActive" checked={formData.isActive} onChange={handleChange} />
+            <input
+              type="checkbox"
+              name="isActive"
+              checked={formData.isActive}
+              onChange={handleChange}
+            />
             <span>Active</span>
           </label>
         </div>
 
-        {/* Images section */}
         <div className="md:col-span-3">
           <label className="block mb-1">Images (URLs)</label>
           {formData.images.map((img, idx) => (
