@@ -65,7 +65,9 @@ const Cart = () => {
       {cart.cartItems.length === 0 ? (
         <div className="flex flex-col items-center justify-center text-center py-16 bg-white rounded-xl shadow-sm border border-gray-300">
           <FaShoppingCart size={40} className="text-purple-400 mb-4" />
-          <h2 className="text-xl font-semibold text-gray-700 mb-2">Your cart is empty</h2>
+          <h2 className="text-xl font-semibold text-gray-700 mb-2">
+            Your cart is empty
+          </h2>
           <p className="text-sm text-gray-500 mb-6">
             Looks like you haven’t added anything yet.
           </p>
@@ -97,14 +99,15 @@ const Cart = () => {
 
                   <div className="flex items-center gap-4">
                     <img
-                      src={item.image || "https://picsum.photos/60?random=1"}
+                      src={
+                        item.images?.[0]
+                          ? item.images[0]
+                          : "https://via.placeholder.com/60x60?text=No+Image"
+                      }
                       alt={item.name}
-                      className="w-14 h-14 object-cover rounded"
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = "https://via.placeholder.com/60x60?text=No+Image";
-                      }}
+                      className="w-14 h-14 object-cover rounded border border-gray-300 bg-white"
                     />
+
                     <div className="text-sm">
                       <p className="font-medium text-gray-800">{item.name}</p>
                       {item.displaySpecs && (
@@ -154,26 +157,25 @@ const Cart = () => {
 
           {/* Actions */}
           <div className="pt-4 border-t border-gray-200 flex flex-col md:flex-row gap-4">
-  <button
-    onClick={() => dispatch(clearCart())}
-    className="w-full md:w-auto text-sm font-medium bg-gray-50 border border-gray-300 px-6 py-3 text-gray-500 hover:text-red-500 hover:border-red-300 transition rounded"
-  >
-    Clear Cart
-  </button>
-  <button
-    onClick={handleSubmitQuote}
-    disabled={isLoading || hasInvalidMOQ}
-    className={`w-full md:w-auto font-semibold px-6 py-3 rounded-md text-md flex items-center justify-center gap-2 transition 
+            <button
+              onClick={() => dispatch(clearCart())}
+              className="w-full md:w-auto text-sm font-medium bg-gray-50 border border-gray-300 px-6 py-3 text-gray-500 hover:text-red-500 hover:border-red-300 transition rounded"
+            >
+              Clear Cart
+            </button>
+            <button
+              onClick={handleSubmitQuote}
+              disabled={isLoading || hasInvalidMOQ}
+              className={`w-full md:w-auto font-semibold px-6 py-3 rounded-md text-md flex items-center justify-center gap-2 transition 
       ${
         isLoading || hasInvalidMOQ
           ? "bg-gray-300 text-gray-500 cursor-not-allowed"
           : "bg-green-500 hover:bg-green-600 text-white"
       }`}
-  >
-    {isLoading ? "Submitting..." : "Request Items"}
-  </button>
-</div>
-
+            >
+              {isLoading ? "Submitting..." : "Request Items"}
+            </button>
+          </div>
         </div>
       )}
     </div>
