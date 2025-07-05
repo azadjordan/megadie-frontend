@@ -9,14 +9,14 @@ const Home = () => {
   const navigate = useNavigate();
 
   const categories = [
-    { name: "Ribbon", image: "https://picsum.photos/seed/Ribbons/300/200" },
+    { name: "Ribbon", image: "https://megadie.s3.eu-central-1.amazonaws.com/General/RibbonProductType.jpg" },
     {
       name: "Creasing Matrix",
-      image: "https://picsum.photos/seed/Creasing/300/200",
+      image: "https://megadie.s3.eu-central-1.amazonaws.com/General/CreasingMatrixProductType.jpg",
     },
     {
       name: "Double Face Tape",
-      image: "https://picsum.photos/seed/Tapes/300/200",
+      image: "https://megadie.s3.eu-central-1.amazonaws.com/General/DoubleFaceTapeProductType.jpg",
     },
   ];
 
@@ -30,7 +30,7 @@ const Home = () => {
       {/* ✅ Hero */}
       <section className="relative h-[70vh] flex items-center justify-center">
         <img
-          src="https://sloanreview.mit.edu/wp-content/uploads/2020/05/GEN-Sheffi-Supply-Chain-Disruption-1290x860-1.jpg"
+          src="https://megadie.s3.eu-central-1.amazonaws.com/General/HeroPhoto.jpg"
           alt="Hero"
           className="absolute inset-0 w-full h-full object-cover brightness-95"
           onError={(e) => {
@@ -49,7 +49,7 @@ const Home = () => {
           </p>
           <Link
             to="/shop"
-            className="bg-purple-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-purple-800 transition cursor-pointer"
+            className="bg-purple-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-purple-600 transition cursor-pointer"
           >
             Browse Products
           </Link>
@@ -77,13 +77,13 @@ const Home = () => {
             {categories.map((cat, i) => (
               <div
                 key={i}
-                className="bg-white rounded-xl overflow-hidden shadow hover:shadow-md transition cursor-pointer"
+                className="bg-white rounded-xl overflow-hidden shadow hover:shadow-xl transition cursor-pointer"
                 onClick={() => handleCategoryClick(cat.name)}
               >
                 <img
                   src={cat.image}
                   alt={cat.name}
-                  className="w-full h-40 object-cover"
+                  className="w-full h-60 object-cover"
                   onError={(e) => {
                     e.target.onerror = null;
                     e.target.src = fallbackImg;
@@ -185,7 +185,7 @@ const Home = () => {
         <div className="flex flex-col md:flex-row justify-center gap-4">
           <Link
             to="/shop"
-            className="bg-purple-700 text-white px-6 py-3 rounded-lg font-medium hover:bg-purple-800 transition cursor-pointer"
+            className="bg-purple-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-purple-600 transition cursor-pointer"
           >
             Browse Products
           </Link>
@@ -193,7 +193,7 @@ const Home = () => {
             href="https://wa.me/971545050244"
             target="_blank"
             rel="noopener noreferrer"
-            className="border border-purple-700 text-purple-700 px-6 py-3 rounded-lg font-medium hover:bg-purple-700 hover:text-white transition cursor-pointer"
+            className="border border-purple-500 text-purple-500 px-6 py-3 rounded-lg font-medium hover:bg-purple-600 hover:text-white transition cursor-pointer"
           >
             Become Our Supplier
           </a>

@@ -23,11 +23,11 @@ const ScrollToTopButton = () => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-4 right-6 z-50">
       {showButton && (
         <button
           onClick={scrollToTop}
-          className="cursor-pointer relative flex items-center justify-center w-12 h-12 rounded-full bg-purple-200 shadow-lg transition-all hover:bg-purple-500"
+          className="cursor-pointer relative flex items-center justify-center w-10 h-10 rounded-full bg-purple-200 shadow-lg transition-all hover:bg-purple-500"
         >
           {/* SVG Progress Circle */}
           <svg

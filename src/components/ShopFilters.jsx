@@ -6,13 +6,14 @@ import {
   resetFilters,
   toggleAttribute,
 } from "../slices/filtersSlice";
-import { FaBoxOpen, FaFilter } from "react-icons/fa";
-import SmartTagSelector from "./SmartTagSelector"; 
+import { FaBoxOpen, FaFilter, FaLayerGroup, FaEraser } from "react-icons/fa";
+import SmartTagSelector from "./SmartTagSelector";
 
 const ShopFilters = () => {
   const dispatch = useDispatch();
   const { selectedProductType, selectedCategoryIds, selectedAttributes } =
     useSelector((state) => state.filters);
+
   const { data: categories = [], isLoading, error } = useGetCategoriesQuery();
 
   if (isLoading)
@@ -27,11 +28,23 @@ const ShopFilters = () => {
 
   return (
     <div className="bg-white rounded md:rounded-lg shadow-sm border border-gray-300 text-sm divide-gray-300 divide-y">
-      {/* 🔹 Product Types */}
+      {/* Product Types */}
       <div className="p-5">
-        <h3 className="text-base font-semibold text-purple-600 mb-3 flex items-center gap-2">
-          <FaBoxOpen /> Product Type
-        </h3>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-base font-semibold text-purple-600 flex items-center gap-2">
+            <FaBoxOpen /> Product Type
+          </h3>
+          {(selectedProductType || selectedCategoryIds.length > 0) && (
+            <button
+              onClick={() => dispatch(resetFilters())}
+              className="inline-flex items-center gap-1 text-xs text-red-500 hover:text-red-700 hover:cursor-pointer font-medium transition"
+            >
+              <FaEraser className="w-3 h-3" />
+              Clear Filters
+            </button>
+          )}
+        </div>
+
         <div className="flex flex-col gap-2">
           {productTypes.map((type) => (
             <button
@@ -49,11 +62,11 @@ const ShopFilters = () => {
         </div>
       </div>
 
-      {/* 🔹 Categories */}
+      {/* Categories */}
       {selectedProductType && (
         <div className="p-5">
           <h4 className="text-base font-semibold text-purple-600 flex items-center gap-2 mb-3">
-            <FaFilter /> Categories
+            <FaLayerGroup /> Categories
           </h4>
           <div className="flex flex-wrap gap-2">
             {relatedCategories.map((cat) => {
@@ -76,11 +89,11 @@ const ShopFilters = () => {
         </div>
       )}
 
-      {/* 🔹 Filters */}
+      {/* Filters */}
       {selectedProductType && relatedCategories.length > 0 && (
         <div className="p-5 border-t border-gray-200">
           <h4 className="text-base font-semibold text-purple-600 flex items-center gap-2 mb-3">
-            <FaFilter /> Filter Options
+            <FaFilter /> More Options
           </h4>
 
           {(() => {
@@ -118,13 +131,16 @@ const ShopFilters = () => {
                   </p>
 
                   {filter.values.length > 15 ? (
-<SmartTagSelector
-  label={filter.displayName}
-  values={filter.values}
-  selectedValues={selectedAttributes[filter.key] || []}
-  onToggle={(val) => dispatch(toggleAttribute({ key: filter.key, value: val }))}
-/>
-
+                    <SmartTagSelector
+                      label={filter.displayName}
+                      values={filter.values}
+                      selectedValues={selected}
+                      onToggle={(val) =>
+                        dispatch(
+                          toggleAttribute({ key: filter.key, value: val })
+                        )
+                      }
+                    />
                   ) : (
                     <div className="flex flex-wrap gap-2">
                       {filter.values.map((val) => {
@@ -153,17 +169,6 @@ const ShopFilters = () => {
               );
             });
           })()}
-        </div>
-      )}
-
-      {(selectedProductType || selectedCategoryIds.length > 0) && (
-        <div className="p-5 border-t border-gray-200">
-          <button
-            onClick={() => dispatch(resetFilters())}
-            className="text-sm text-red-600 hover:underline font-medium"
-          >
-            Clear Filters
-          </button>
         </div>
       )}
     </div>
