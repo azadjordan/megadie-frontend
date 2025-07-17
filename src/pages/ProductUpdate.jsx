@@ -21,7 +21,7 @@ const SIZE_OPTIONS = [
   "12-mm",
 ];
 
-const VARIANT_OPTIONS = ["100-yd", "150-yd", "35-yd", "none"];
+const VARIANT_OPTIONS = ["100-yd", "150-yd", "35-yd"];
 
 const QUALITY_OPTIONS = ["A++", "A", "B"];
 
@@ -118,8 +118,16 @@ const ProductUpdate = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const payload = { ...formData };
+
+    // Remove empty variant to match schema
+    if (payload.variant === "") {
+      delete payload.variant;
+    }
+
     try {
-      await updateProduct({ id: productId, ...formData }).unwrap();
+      await updateProduct({ id: productId, ...payload }).unwrap();
       toast.success("Product updated successfully!");
       navigate("/admin/products");
     } catch (err) {
@@ -215,10 +223,11 @@ const ProductUpdate = () => {
             onChange={handleChange}
             className="w-full border p-2 rounded"
           >
-            <option value="">Select Variant</option>
+            <option value="">None</option>{" "}
+            {/* User-friendly, but submits empty string */}
             {VARIANT_OPTIONS.map((opt) => (
               <option key={opt} value={opt}>
-                {opt === "none" ? "None" : opt}
+                {opt}
               </option>
             ))}
           </select>
