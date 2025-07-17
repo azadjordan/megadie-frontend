@@ -39,17 +39,19 @@ const ProductCreate = () => {
     }
   };
 
-  const sizeOptions = [
-    "1-inch",
-    "0.5-inch",
-    "0.4x1.5",
-    "0.5x1.5",
-    "0.5x1.6",
-    "6mm",
-    "9mm",
-    "10mm",
-    "12mm",
-  ];
+const sizeOptions = [
+  "1-inch",
+  "1/2-inch",
+  "3/4-inch",
+  "0.4x1.5-mm",
+  "0.5x1.5-mm",
+  "0.5x1.6-mm",
+  "6-mm",
+  "9-mm",
+  "10-mm",
+  "12-mm",
+];
+
 
   return (
     <div className="p-6 max-w-2xl mx-auto">
