@@ -215,7 +215,7 @@ const ProductUpdate = () => {
             onChange={handleChange}
             className="w-full border p-2 rounded"
           >
-            <option value="">None (optional)</option>
+            <option value="">None</option>
             {VARIANT_OPTIONS.map((opt) => (
               <option key={opt} value={opt}>
                 {opt}
