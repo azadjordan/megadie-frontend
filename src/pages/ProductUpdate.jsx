@@ -21,7 +21,7 @@ const SIZE_OPTIONS = [
   "12-mm",
 ];
 
-const VARIANT_OPTIONS = ["100-yd", "150-yd", "35-yd"];
+const VARIANT_OPTIONS = ["100-yd", "150-yd", "35-yd", "none"];
 
 const QUALITY_OPTIONS = ["A++", "A", "B"];
 
@@ -215,10 +215,10 @@ const ProductUpdate = () => {
             onChange={handleChange}
             className="w-full border p-2 rounded"
           >
-            <option value="">None</option>
+            <option value="">Select Variant</option>
             {VARIANT_OPTIONS.map((opt) => (
               <option key={opt} value={opt}>
-                {opt}
+                {opt === "none" ? "None" : opt}
               </option>
             ))}
           </select>
