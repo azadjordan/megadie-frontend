@@ -17,13 +17,13 @@ const ProductCard = ({ product }) => {
 
   const handleAddToCart = () => {
     if (isUnderMOQ || !product.isAvailable) return;
-  
+
     dispatch(addToCart({ ...product, quantity }));
     setIsAdded(true);
     setTimeout(() => setIsAdded(false), 800);
     setQuantity(moq);
   };
-  
+
   return (
     <div className="relative bg-gray-50 rounded-lg shadow-md overflow-hidden flex flex-col hover:shadow-xl transition h-full border-gray-300 border">
       {/* ❌ Not Available Tooltip */}
@@ -35,16 +35,15 @@ const ProductCard = ({ product }) => {
 
       {/* ✅ Product Image */}
       <Link to={`/product/${product._id}`}>
-<img
-  src={image}
-  alt={product.name}
-  className="h-48 w-full object-cover"
-  onError={(e) => {
-    e.currentTarget.onerror = null; // Prevent looping
-    e.currentTarget.src = "/placeholder.jpg";
-  }}
-/>
-
+        <img
+          src={image}
+          alt={product.name}
+          className="h-48 w-full object-cover"
+          onError={(e) => {
+            e.currentTarget.onerror = null; // Prevent looping
+            e.currentTarget.src = "/placeholder.jpg";
+          }}
+        />
       </Link>
 
       {/* ✅ Details Section */}
