@@ -9,14 +9,14 @@ const Home = () => {
   const navigate = useNavigate();
 
   const categories = [
-    { name: "Ribbon", image: "https://megadie.s3.eu-central-1.amazonaws.com/General/RibbonProductType.jpg" },
+    { name: "Ribbon", image: "https://megadie.s3.eu-central-1.amazonaws.com/Home+Page/RibbonProductType.jpg" },
     {
       name: "Creasing Matrix",
-      image: "https://megadie.s3.eu-central-1.amazonaws.com/General/CreasingMatrixProductType.jpg",
+      image: "https://megadie.s3.eu-central-1.amazonaws.com/Home+Page/CreasingMatrixProductType.jpg",
     },
     {
       name: "Double Face Tape",
-      image: "https://megadie.s3.eu-central-1.amazonaws.com/General/DoubleFaceTapeProductType.jpg",
+      image: "https://megadie.s3.eu-central-1.amazonaws.com/Home+Page/DoubleFaceTapeProductType.jpg",
     },
   ];
 
@@ -30,7 +30,7 @@ const Home = () => {
       {/* ✅ Hero */}
       <section className="relative h-[70vh] flex items-center justify-center">
         <img
-          src="https://megadie.s3.eu-central-1.amazonaws.com/General/HeroPhoto.jpg"
+          src="https://megadie.s3.eu-central-1.amazonaws.com/Home+Page/HeroPhoto.jpg"
           alt="Hero"
           className="absolute inset-0 w-full h-full object-cover brightness-95"
           onError={(e) => {

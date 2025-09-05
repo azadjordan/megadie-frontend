@@ -21,7 +21,7 @@ const SIZE_OPTIONS = [
   "12-mm",
 ];
 
-const VARIANT_OPTIONS = ["100-yd", "150-yd", "35-yd", "50-m"];
+const VARIANT_OPTIONS = ["100-yd", "150-yd", "35-yd", "50-m", "50-pcs"];
 
 const QUALITY_OPTIONS = ["A++", "A", "B"];
 
