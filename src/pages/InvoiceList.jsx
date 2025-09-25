@@ -84,15 +84,11 @@ const InvoiceList = () => {
                   <td className="px-4 py-3">{invoice.amountPaid.toFixed(2)}</td>
 
                   <td className="px-4 py-3">
-                    {invoice.payments && invoice.payments.length > 0 ? (
+                    {invoice.payments?.length ? (
                       <div className="text-xs space-y-1">
-                        {invoice.payments.map((p) =>
-                          typeof p === "string" ? (
-                            <div key={p}>{p}</div>
-                          ) : (
-                            <div key={p._id}>{p._id}</div>
-                          )
-                        )}
+                        {invoice.payments.map((id) => (
+                          <div key={id}>{id}</div>
+                        ))}
                       </div>
                     ) : (
                       <span className="text-gray-400 italic text-xs">

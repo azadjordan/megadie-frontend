@@ -32,7 +32,7 @@ const ShopFilters = () => {
       <div className="p-5">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-base font-semibold text-purple-600 flex items-center gap-2">
-            <FaBoxOpen /> Product Type
+            <FaBoxOpen /> Choose Product Type:
           </h3>
           {(selectedProductType || selectedCategoryIds.length > 0) && (
             <button
@@ -50,11 +50,14 @@ const ShopFilters = () => {
             <button
               key={type}
               onClick={() => dispatch(setProductType(type))}
-              className={`cursor-pointer text-left px-3 py-2 rounded-md text-sm font-medium transition ${
-                selectedProductType === type
-                  ? "bg-purple-500 text-white"
-                  : "hover:bg-purple-100 text-gray-800"
-              }`}
+              aria-pressed={selectedProductType === type}
+              className={`cursor-pointer text-left px-3 py-2 rounded-md text-sm font-medium transition
+    focus:outline-none
+    ${
+      selectedProductType === type
+        ? "bg-purple-500 text-white shadow"
+        : "bg-white border border-gray-300 text-gray-800 shadow-sm hover:shadow-md hover:bg-purple-50 active:translate-y-px"
+    }`}
             >
               {type}
             </button>
