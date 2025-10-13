@@ -1,89 +1,70 @@
+// src/slices/productsApiSlice.js
 import { PRODUCTS_URL } from "../constants";
 import apiSlice from "./apiSlice";
 
+const buildQS = ({
+  productType,
+  categoryIds = [],
+  attributes = {},
+  page = 1,
+  limit = 24,
+} = {}) => {
+  const params = new URLSearchParams();
+
+  if (productType) params.append("productType", productType);
+
+  (Array.isArray(categoryIds) ? categoryIds : [categoryIds])
+    .filter(Boolean)
+    .forEach((id) => params.append("categoryIds", id));
+
+  if (attributes && typeof attributes === "object") {
+    Object.entries(attributes).forEach(([key, values]) => {
+      (Array.isArray(values) ? values : [values])
+        .filter((v) => v !== undefined && v !== null && v !== "")
+        .forEach((v) => params.append(`attributes[${key}]`, v));
+    });
+  }
+
+  params.append("page", String(page));
+  params.append("limit", String(limit));
+
+  return params.toString();
+};
+
 export const productsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    // ✅ Get all products (with longer cache duration)
     getProducts: builder.query({
-      query: ({ productType, categoryIds, attributes }) => {
-        const params = new URLSearchParams();
-
-        if (productType) params.append("productType", productType);
-
-        if (categoryIds?.length > 0) {
-          for (const id of categoryIds) {
-            params.append("categoryIds", id);
-          }
-        }
-
-        if (attributes) {
-          for (const key in attributes) {
-            for (const value of attributes[key]) {
-              params.append(`attributes[${key}]`, value);
-            }
-          }
-        }
-
-        return `${PRODUCTS_URL}?${params.toString()}`;
-      },
+      // args must include page & limit
+      query: (args = {}) => `${PRODUCTS_URL}?${buildQS(args)}`,
+      // ensure it re-fetches when args change (page/filters)
+      refetchOnMountOrArgChange: true,
     }),
 
     getProductsAdmin: builder.query({
-      query: ({ productType, categoryIds, attributes }) => {
-        const params = new URLSearchParams();
-    
-        if (productType) params.append("productType", productType);
-    
-        if (categoryIds?.length > 0) {
-          for (const id of categoryIds) {
-            params.append("categoryIds", id);
-          }
-        }
-    
-        if (attributes) {
-          for (const key in attributes) {
-            for (const value of attributes[key]) {
-              params.append(`attributes[${key}]`, value);
-            }
-          }
-        }
-    
-        return `/api/products/admin?${params.toString()}`;
-      },
+      query: (args = {}) => `/api/products/admin?${buildQS(args)}`,
+      refetchOnMountOrArgChange: true,
     }),
-    
-    
-    // ✅ Add this
+
     getProductById: builder.query({
       query: (id) => `${PRODUCTS_URL}/${id}`,
     }),
 
-    // ✅ Create a new product
     createProduct: builder.mutation({
-      query: (data) => ({
-        url: PRODUCTS_URL,
-        method: "POST",
-        body: data,
-      }),
+      query: (data) => ({ url: PRODUCTS_URL, method: "POST", body: data }),
       invalidatesTags: ["Product"],
     }),
 
-    // ✅ Update an existing product
     updateProduct: builder.mutation({
       query: ({ id, ...data }) => ({
         url: `${PRODUCTS_URL}/${id}`,
         method: "PUT",
         body: data,
       }),
-      invalidatesTags: (result, error, { id }) => [{ type: "Product", id }],
+      invalidatesTags: (r, e, { id }) => [{ type: "Product", id }],
     }),
 
-    // ✅ Delete a product
     deleteProduct: builder.mutation({
-      query: (id) => ({
-        url: `${PRODUCTS_URL}/${id}`,
-        method: "DELETE",
-      }),
+      query: (id) => ({ url: `${PRODUCTS_URL}/${id}`, method: "DELETE" }),
       invalidatesTags: ["Product"],
     }),
   }),
