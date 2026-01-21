@@ -1,17 +1,22 @@
+import { useState } from "react";
 import {
   useGetInvoicesQuery,
   useDeleteInvoiceMutation,
 } from "../slices/invoicesApiSlice";
+import { useGetUsersQuery } from "../slices/usersApiSlice";
 import { Link } from "react-router-dom";
 import { FaTrash, FaShareAlt } from "react-icons/fa";
 
 const InvoiceList = () => {
+  const [selectedUserId, setSelectedUserId] = useState("");
+
+  const { data: users = [], isLoading: isLoadingUsers } = useGetUsersQuery();
   const {
     data: invoices = [],
     isLoading,
     error,
     refetch,
-  } = useGetInvoicesQuery();
+  } = useGetInvoicesQuery({ userId: selectedUserId });
   const [deleteInvoice] = useDeleteInvoiceMutation();
 
   const handleDelete = async (id) => {
@@ -42,9 +47,36 @@ const InvoiceList = () => {
 
   return (
     <div className="p-6 w-full">
-      <h2 className="text-2xl font-semibold text-purple-700 mb-4">
-        All Invoices
-      </h2>
+      <div className="flex flex-col gap-3 mb-4 sm:flex-row sm:items-center sm:justify-between">
+        <h2 className="text-2xl font-semibold text-purple-700">All Invoices</h2>
+        <div className="flex items-center gap-2">
+          <label
+            htmlFor="invoiceUserFilter"
+            className="text-sm font-medium text-gray-700"
+          >
+            Filter by user
+          </label>
+          <select
+            id="invoiceUserFilter"
+            value={selectedUserId}
+            onChange={(e) => setSelectedUserId(e.target.value)}
+            className="border border-gray-300 rounded-md p-2 text-sm focus:ring focus:ring-purple-200"
+            disabled={isLoadingUsers}
+          >
+            <option value="">All users</option>
+            {isLoadingUsers ? (
+              <option disabled>Loading users...</option>
+            ) : (
+              users.map((user) => (
+                <option key={user._id} value={user._id}>
+                  {user.name}
+                  {user.email ? ` (${user.email})` : ""}
+                </option>
+              ))
+            )}
+          </select>
+        </div>
+      </div>
 
       {isLoading ? (
         <p className="text-gray-500">Loading invoices...</p>

@@ -1,9 +1,30 @@
-import { useGetUsersQuery } from "../slices/usersApiSlice";
+import {
+  useGetUsersQuery,
+  useDeleteUserMutation,
+} from "../slices/usersApiSlice";
 import { Link } from "react-router-dom";
 import { FaEdit, FaTrash, FaUserShield, FaUser } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const UserList = () => {
   const { data: users = [], isLoading, error, refetch } = useGetUsersQuery();
+  const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
+
+  const handleDelete = async (userId) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this user?"
+    );
+    if (!confirmDelete) return;
+
+    try {
+      const response = await deleteUser(userId).unwrap();
+      toast.success(response?.message || "User deleted successfully.");
+      refetch();
+    } catch (err) {
+      console.error("Failed to delete user", err);
+      toast.error(err?.data?.message || "Failed to delete user.");
+    }
+  };
 
   return (
     <div className="p-6 w-full">
@@ -62,6 +83,8 @@ const UserList = () => {
                       <button
                         className="p-2 text-red-600 hover:text-red-800 cursor-pointer"
                         title="Delete"
+                        onClick={() => handleDelete(user._id)}
+                        disabled={isDeleting}
                       >
                         <FaTrash />
                       </button>
