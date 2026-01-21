@@ -6,10 +6,11 @@ export const invoicesApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // ✅ Get all invoices (admin)
     getInvoices: builder.query({
-      query: ({ userId } = {}) => {
+      query: ({ userId, includeTotals } = {}) => {
         const params = new URLSearchParams();
 
         if (userId) params.append("user", userId);
+        if (includeTotals) params.append("includeTotals", "true");
 
         const queryString = params.toString();
         return queryString ? `${INVOICES_URL}?${queryString}` : INVOICES_URL;

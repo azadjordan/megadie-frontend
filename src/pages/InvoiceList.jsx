@@ -9,15 +9,18 @@ import { FaTrash, FaShareAlt } from "react-icons/fa";
 
 const InvoiceList = () => {
   const [selectedUserId, setSelectedUserId] = useState("");
+  const includeTotals = Boolean(selectedUserId);
 
   const { data: users = [], isLoading: isLoadingUsers } = useGetUsersQuery();
   const {
-    data: invoices = [],
+    data,
     isLoading,
     error,
     refetch,
-  } = useGetInvoicesQuery({ userId: selectedUserId });
+  } = useGetInvoicesQuery({ userId: selectedUserId, includeTotals });
   const [deleteInvoice] = useDeleteInvoiceMutation();
+  const invoices = Array.isArray(data) ? data : data?.invoices ?? [];
+  const unpaidTotal = Array.isArray(data) ? null : data?.totals?.unpaidAmount;
 
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm(
@@ -48,7 +51,19 @@ const InvoiceList = () => {
   return (
     <div className="p-6 w-full">
       <div className="flex flex-col gap-3 mb-4 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-2xl font-semibold text-purple-700">All Invoices</h2>
+        <div className="flex flex-col gap-1">
+          <h2 className="text-2xl font-semibold text-purple-700">
+            All Invoices
+          </h2>
+          {includeTotals && typeof unpaidTotal === "number" && (
+            <p className="text-sm text-gray-600">
+              Unpaid balance:{" "}
+              <span className="font-semibold text-gray-800">
+                {unpaidTotal.toFixed(2)}
+              </span>
+            </p>
+          )}
+        </div>
         <div className="flex items-center gap-2">
           <label
             htmlFor="invoiceUserFilter"
